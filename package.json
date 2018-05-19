@@ -3,15 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^4.1.1",
     "highcharts": "^6.1.0",
     "highcharts-draggable-points": "github:highcharts/draggable-points",
     "highcharts-more": "^0.1.7",
     "lodash": "^4.17.10",
+    "numeral": "^2.0.6",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-highcharts": "^16.0.2",
     "react-jsx-highcharts": "^2.2.1",
+    "react-redux": "^5.0.7",
     "react-scripts": "1.1.4",
+    "react-sparklines": "^1.7.0",
+    "reactstrap": "^6.0.1",
     "victory": "^0.26.0"
   },
   "scripts": {
