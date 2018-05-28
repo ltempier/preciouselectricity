@@ -9,3 +9,27 @@ html, body {
     width: 100%;
 }
 
+.App {
+
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.sparklines-container {
+    bottom: -9px;
+}
+
+.tab-content {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}

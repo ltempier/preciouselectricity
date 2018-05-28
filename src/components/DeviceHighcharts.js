@@ -4,22 +4,29 @@ import _ from 'lodash';
 import ReactHighcharts from 'react-highcharts';
 import DraggablePoints from 'highcharts-draggable-points'
 
+import {formatHour} from '../tools/format'
+
+import {connect} from "react-redux";
+import PropTypes from 'prop-types'
+import {updDevice} from "../actions/index";
+
+
 DraggablePoints(ReactHighcharts.Highcharts);
 
-function formatHour(hour) {
-    return (hour > 9 ? '' : '0') + hour + ':00 '
-}
 
-class DeviceCharts extends Component {
+const mapDispatchToProps = dispatch => {
+    return {
+        updDevice: (id, device) => dispatch(updDevice(id, device)),
+    };
+};
+
+class ConnectedDeviceCharts extends Component {
 
     constructor(props) {
 
         super(props);
 
-        this.state = {};
-
         this.lastEvent = {};
-
         this.chartConfig = {
             chart: {
                 type: 'area',
@@ -40,7 +47,24 @@ class DeviceCharts extends Component {
                 categories: _.range(0, 24).map(formatHour),
                 min: 0,
                 max: 23,
-                tickInterval: 2
+                tickInterval: 2,
+                plotBands: [
+                    {
+                        color: '#FAFAFA',
+                        from: 0, // Start of the plot band
+                        to: 7 // End of the plot band
+                    },
+                    {
+                        color: '#FAFAFA',
+                        from: 12, // Start of the plot band
+                        to: 16 // End of the plot band
+                    },
+                    {
+                        color: '#FAFAFA',
+                        from: 22, // Start of the plot band
+                        to: 24 // End of the plot band
+                    },
+                ],
             },
             yAxis: {
                 max: 100,
@@ -72,9 +96,10 @@ class DeviceCharts extends Component {
             ],
             tooltip: {
                 formatter: function () {
-                    return '<b>' + this.x + ' ' + this.y + '%</b>' +
-                        '<br>' +
+                    return [
+                        `<b>${this.x} ${this.y}%</b>`,
                         '<small>double click to remove</small>'
+                    ].join('<br>')
                 }
             },
             plotOptions: {
@@ -133,7 +158,6 @@ class DeviceCharts extends Component {
         };
 
         if (e.point.x >= 0 && e.point.x < 24) {
-            // console.log('onPointDblClick', e);
             e.point.remove();
             this.onDataChange()
         }
@@ -217,8 +241,6 @@ class DeviceCharts extends Component {
             }
         } else if (previousPoint)
             previousPoint.remove()
-
-
     }
 
     onDataChange() {
@@ -259,7 +281,12 @@ class DeviceCharts extends Component {
             }
         }
 
-        this.props.onDataChange(data)
+        this.props.updDevice(this.props.id, {
+            data: data,
+            chartData: chartData.map((point) => {
+                return {x: point.x, y: point.y}
+            })
+        })
     }
 
     render() {
@@ -269,16 +296,12 @@ class DeviceCharts extends Component {
     }
 }
 
-
-DeviceCharts.defaultProps = {
-    data: [],
-    onDataChange: function (data, chartData) {
-
-        //data = [0 ... 23]
-        //chartData = [{x:0, y:100}, ... ,{x:24, y:100}]
-
-        console.log('onDataChange not init')
-    }
+ConnectedDeviceCharts.propTypes = {
+    id: PropTypes.string.isRequired,
+    data: PropTypes.array
 };
 
+const DeviceCharts = connect(null, mapDispatchToProps)(ConnectedDeviceCharts);
+
 export default DeviceCharts;
+

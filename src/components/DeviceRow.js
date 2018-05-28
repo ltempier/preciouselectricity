@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
-import _ from 'lodash';
-
+import {connect} from "react-redux";
+import PropTypes from 'prop-types'
 import DeviceCharts from './DeviceHighcharts';
 import {Sparklines, SparklinesBars} from 'react-sparklines';
+import {updDevice, rmvDevice} from "../actions/index";
+
+import {deviceTypes} from "../constants/deviceConfigs";
 
 import {
     Collapse,
@@ -15,70 +18,56 @@ import {
     Input
 } from 'reactstrap';
 
-class DeviceRow extends Component {
+
+const mapStateToProps = state => {
+    return {devices: state.devices};
+};
+
+
+const mapDispatchToProps = dispatch => {
+    return {
+        updDevice: (id, device) => dispatch(updDevice(id, device)),
+        rmvDevice: (id) => dispatch(rmvDevice(id))
+    };
+};
+
+class ConnectedDeviceRow extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
-            devicePower: 1000,
-            deviceName: 'no name',
-            deviceType: 1,
-            quantity: 1,
-            data: [],
             collapse: false
         };
 
-        this.onEditChartClick = this.onEditChartClick.bind(this);
-        this.onDeviceNameChange = this.onDeviceTypeChange.bind(this);
-        this.onDevicePowerChange = this.onDevicePowerChange.bind(this);
-        this.onDeviceTypeChange = this.onDeviceTypeChange.bind(this);
+        this.onInputChange = this.onInputChange.bind(this);
+        this.onInputNumberChange = this.onInputNumberChange.bind(this);
         this.onQuantityClick = this.onQuantityClick.bind(this);
-        this.onDataChange = this.onDataChange.bind(this)
-    }
-
-    onEditChartClick() {
-        this.setState({collapse: !this.state.collapse});
-    }
-
-    onDeviceNameChange(e) {
-        this.setState({deviceName: e.target.value});
-    }
-
-    onDevicePowerChange(e) {
-        this.setState({devicePower: e.target.value}, this.onDeviceUpdate);
-    }
-
-    onDeviceTypeChange(e) {
-        this.setState({deviceType: e.target.value}, this.onDeviceUpdate);
     }
 
     onQuantityClick(delta) {
-        this.setState({quantity: this.state.quantity + delta}, this.onDeviceUpdate);
+        this.props.updDevice(this.props.id, {quantity: this.props.quantity + delta})
     }
 
-    onDataChange(data) {
-        this.setState({data: data}, this.onDeviceUpdate);
+    onInputNumberChange(e) {
+        this.props.updDevice(this.props.id, {[e.target.name]: parseInt(e.target.value, 10)})
     }
 
-    onDeviceUpdate() {
-        this.props.onDeviceUpdate(this.state.data.map((p) => {
-            return this.state.quantity * this.state.deviceType * this.state.devicePower * (p / 100)
-        }))
+    onInputChange(e) {
+        this.props.updDevice(this.props.id, {[e.target.name]: e.target.value})
     }
 
     render() {
 
-
         return (
-
-            <div>
-
-                <Row className="justify-content-md-center">
+            <div className="pt-2 pb-3">
+                <Row className="">
                     <Col md="2" xs="12">
                         <Label>Device name</Label>
                         <Input type="text"
-                               value={this.state.deviceName}
-                               onChange={this.onDeviceNameChange}
+                               name="name"
+                               value={this.props.name}
+                               onChange={this.onInputChange}
                         />
 
                     </Col>
@@ -86,64 +75,58 @@ class DeviceRow extends Component {
                     <Col md="2" xs="12">
                         <Label>Device power</Label>
                         <Input type="number" min={0} step={100}
-                               value={this.state.devicePower}
-                               onChange={this.onDevicePowerChange}
+                               name="power"
+                               value={this.props.power}
+                               onChange={this.onInputNumberChange}
                         />
                     </Col>
 
-
-                    <Col md="2" xs="12">
-                        <Label>Device type</Label>
-                        <Input type="select" value={this.state.deviceType} onChange={this.onDeviceTypeChange}>
-                            <option value={1}>Consumer</option>
-                            <option value={-1}>Producer</option>
-                        </Input>
-                    </Col>
-
-                    <Col md="auto" xs="12">
+                    <Col md="auto" xs="4">
                         <Label>Quantity</Label>
                         <Form inline>
                             <ButtonGroup>
                                 <Button outline color="primary" onClick={() => this.onQuantityClick(-1)}
-                                        disabled={this.state.quantity <= 0}>-</Button>
-                                <Button outline color="primary" disabled>{this.state.quantity}</Button>
+                                        disabled={this.props.quantity <= 0}>-</Button>
+                                <Button outline color="primary" disabled>{this.props.quantity}</Button>
                                 <Button outline color="primary" onClick={() => this.onQuantityClick(1)}>+</Button>
                             </ButtonGroup>
                         </Form>
                     </Col>
 
-                    <Col md="3" xs="8" className="sparklines-container">
-                        <Sparklines data={this.state.data} min={0} className="">
+                    <Col md="4" xs="8" className="">
+
+                        <Sparklines data={this.props.data} min={0} className="">
                             <SparklinesBars style={{fill: "#007bff"}}/>
                         </Sparklines>
+
                     </Col>
 
-                    <Col md="auto" xs="4" className="align-self-end">
-                        <Button outline color="primary"
-                                onClick={this.onEditChartClick}>{this.state.collapse ? "Hide" : "Edit"}</Button>
+                    <Col md="auto" xs="12">
+                        <Button outline color="primary" onClick={() => this.setState({collapse: !this.state.collapse})}>
+                            {this.state.collapse ? "Hide" : "Edit"}
+                        </Button>
                     </Col>
                 </Row>
 
 
                 <Collapse isOpen={this.state.collapse} className="mt-3">
-                    <DeviceCharts data={this.props.editableChartData} onDataChange={this.onDataChange}/>
+                    <DeviceCharts id={this.props.id} data={this.props.chartData}/>
+                    <Button outline color="danger" onClick={() => this.props.rmvDevice(this.props.id)}>Delete</Button>
                 </Collapse>
             </div>
         )
     }
 }
 
-
-DeviceRow.defaultProps = {
-    editableChartData: [
-        {
-            x: 11,
-            y: 100
-        },
-    ],
-    onDeviceUpdate: function (data) {
-        console.log('onDeviceUpdate not init')
-    }
+ConnectedDeviceRow.propTypes = {
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    power: PropTypes.number.isRequired,
+    type: PropTypes.number.isRequired,
+    data: PropTypes.array,
+    chartData: PropTypes.array
 };
+
+const DeviceRow = connect(mapStateToProps, mapDispatchToProps)(ConnectedDeviceRow);
 
 export default DeviceRow;
