@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 function fixHour(hour) {
-    while (hour > 23)
+    while (hour > 24)
         hour -= 24;
     while (hour < 0)
         hour += 24;
@@ -10,7 +10,7 @@ function fixHour(hour) {
 
 export function formatHour(hour) {
     hour = fixHour(hour);
-    return (hour > 9 ? '' : '0') + hour + ':00'
+    return (hour > 9 ? '' : '0') + hour //+ ':00'
 }
 
 export function formatHourInterval(hour) {
@@ -38,7 +38,7 @@ export function stringFormatLargeNumber(number, precision) {
 
     let str = `${_.round(number, precision)} `;
     options.some(function (option) {
-        if (number >= option.max) {
+        if (Math.abs(number) >= option.max) {
             str = `${_.round(number / option.max, precision)} ${option.prefix}`;
             return true
         }

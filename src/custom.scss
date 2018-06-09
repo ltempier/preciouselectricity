@@ -1,0 +1,83 @@
+$white: #fff !default;
+$black: #000 !default;
+
+$body-bg: #F9F9F9;
+$precious-green: #97F0B6 !default;
+$precious-gray: #C9C9C9 !default;
+$precious-red: #FF8595 !default;
+
+$theme-colors: (
+        "primary": $precious-green,
+        "secondary": $black
+);
+
+$btn-border-radius: 3rem;
+$input-btn-focus-color: $white;
+
+@import "node_modules/bootstrap/scss/bootstrap";
+
+label {
+  @extend small;
+  @extend .text-muted;
+}
+
+.card {
+  @extend .card;
+  box-shadow: 0 2px 4px 0 rgba($precious-gray, 0.3);
+}
+
+.btn-outline {
+  font-weight: bold;
+  padding: 0.375rem 1rem;
+  border-width: 2px;
+}
+
+.btn-outline-primary {
+  @extend .btn-outline;
+  @include button-outline-variant($precious-green, $white);
+}
+
+.btn-outline-primary.active {
+  color: $white !important;
+}
+
+.btn-outline-secondary {
+  @extend .btn-outline;
+  @include button-outline-variant($black, $white);
+}
+
+.btn-outline-danger {
+  @extend .btn-outline;
+  @include button-outline-variant($precious-red, $white);
+}
+
+$badge-type-size: 3em !default;
+
+.badge-type {
+  line-height: $badge-type-size;
+  height: $badge-type-size;
+  width: $badge-type-size;
+  border-radius: $badge-type-size/2;
+
+  text-align: center;
+
+  color: $white;
+  background-color: $precious-green;
+
+}
+
+.badge-type.simulation {
+  background-color: $black;
+}
+
+.badge-type.disable {
+  background-color: $precious-gray !important;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.sparklines-container {
+  bottom: -9px;
+}

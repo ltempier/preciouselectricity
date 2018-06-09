@@ -9,8 +9,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 import highchartsTheme from './tools/highchartsTheme';
 
-import 'bootstrap/dist/css/bootstrap.css';
-import './index.css';
+import './custom.scss';
 
 highchartsTheme();
 

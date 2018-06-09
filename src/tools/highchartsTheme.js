@@ -1,3 +1,5 @@
+import {white, green, grayLight, black} from '../constants/colors'
+
 import ReactHighcharts from 'react-highcharts';
 
 
@@ -5,65 +7,23 @@ export default function highchartsTheme() {
 
     ReactHighcharts.Highcharts.theme = {
         colors: ['black', '#dc3545', '#28a745', '#007bff'],
-        chart: {
-            backgroundColor: {},
-            borderWidth: 0,
-            borderRadius: 0,
-            plotBackgroundColor: null,
-            plotShadow: false,
-            plotBorderWidth: 0
-        },
-        title: {
-            style: {
-                color: 'black'
-            }
-        },
-        subtitle: {
-            style: {
-                color: '#999'
-            }
-        },
+        chart: {},
+        title: {},
+        subtitle: {},
         xAxis: {
+            tickLength: 0,
+            lineWidth: 0,
             gridLineWidth: 0,
-            lineColor: '#999',
-            tickColor: '#999',
+            minorGridLineWidth: 0,
             labels: {
-                style: {
-                    color: '#999',
-                    fontWeight: 'bold'
-                }
-            },
-            title: {
-                style: {
-                    color: '#AAA',
-                    font: 'bold 12px Lucida Grande, Lucida Sans Unicode,' +
-                    ' Verdana, Arial, Helvetica, sans-serif'
-                }
+                enabled: false
             }
         },
         yAxis: {
-            // alternateGridColor: null,
-            // minorTickInterval: null,
-            // gridLineColor: 'rgba(255, 255, 255, .1)',
-            // minorGridLineColor: 'rgba(255,255,255,0.07)',
-            lineWidth: 0,
-            tickWidth: 0,
-            labels: {
-                style: {color: '#999'}
-            },
-            title: {
-                style: {
-                    color: '#AAA',
-                    font: 'bold 12px Lucida Grande, Lucida Sans Unicode,' +
-                    ' Verdana, Arial, Helvetica, sans-serif'
-                }
-            }
+            gridLineWidth: 0,
+            minorGridLineWidth: 0
         },
-        labels: {
-            style: {
-                color: '#CCC'
-            }
-        },
+        labels: {},
 
         tooltip: {
             backgroundColor: 'white',
@@ -73,12 +33,19 @@ export default function highchartsTheme() {
             }
         },
 
-        // special colors for some of the demo examples
-        legendBackgroundColor: 'rgba(48, 48, 48, 0.8)',
-        background2: 'rgb(70, 70, 70)',
-        dataLabelsColor: '#444',
-        textColor: '#E0E0E0',
-        maskColor: 'rgba(255,255,255,0.3)'
+        plotOptions: {
+            areaspline: {
+                fillOpacity: 1,
+                lineWidth: 0,
+                marker: {
+                    fillColor: white,
+                    lineWidth: 2,
+                    lineColor: black
+                }
+            },
+
+        }
+
     };
 
     ReactHighcharts.Highcharts.setOptions(ReactHighcharts.Highcharts.theme);

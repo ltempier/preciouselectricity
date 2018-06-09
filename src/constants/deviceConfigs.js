@@ -4,6 +4,12 @@ export const deviceTypes = {
     battery: 3
 };
 
+export const deviceTypesById = {
+    1: 'consumer',
+    2: 'producer',
+    3: 'battery'
+};
+
 export const deviceConfigs = [
     {
         name: 'empty',

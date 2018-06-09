@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import _ from "lodash";
-import {Nav, NavItem, NavLink, TabContent, TabPane, Row, Col, Card, CardBody} from 'reactstrap';
+import {Button, ButtonGroup, Row, Col, Card, CardBody, Nav, NavItem, NavLink} from 'reactstrap';
 
 import {deviceTypes} from '../constants/deviceConfigs';
 import DeviceList from './DeviceList';
 import AddDevice from "./AddDevice";
+import BatteryForm from "./BatteryForm";
 
 const mapStateToProps = state => {
     return {devices: state.devices};
@@ -17,16 +18,28 @@ class ConnectedDeviceCommand extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            activeType: deviceTypes.consumer
+            filterIndexes: [],
         };
 
-        this.onChangeActiveTab = this.onChangeActiveTab.bind(this)
+        this.onFilterClick = this.onFilterClick.bind(this)
     }
 
-    onChangeActiveTab(activeType) {
-        if (activeType === this.state.activeType)
-            return;
-        this.setState({activeType})
+    onFilterClick(newFilterIdx) {
+        let idx = this.state.filterIndexes.indexOf(newFilterIdx);
+        let filterIndexes = this.state.filterIndexes;
+
+        if (idx >= 0)
+            filterIndexes.splice(idx, 1);
+        else {
+            const field = this.props.filters[newFilterIdx].field;
+            filterIndexes = filterIndexes.filter((filterIdx) => {
+                const filter = this.props.filters[filterIdx];
+                return filter.field !== field
+            });
+            filterIndexes.push(newFilterIdx);
+        }
+
+        this.setState({filterIndexes})
     }
 
     render() {
@@ -34,74 +47,86 @@ class ConnectedDeviceCommand extends Component {
         return (
 
             <div>
-                <Nav tabs fill justified>
-                    <NavItem>
-                        <NavLink
-                            href="#"
-                            active={this.state.activeType === deviceTypes.consumer}
-                            onClick={() => {
-                                this.onChangeActiveTab(deviceTypes.consumer)
-                            }}
-                        >
-                            Consumer
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                            href="#"
-                            active={this.state.activeType === deviceTypes.producer}
-                            onClick={() => {
-                                this.onChangeActiveTab(deviceTypes.producer)
-                            }}
-                        >
-                            Producer
-                        </NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink
-                            href="#"
-                            active={this.state.activeType === deviceTypes.battery}
-                            onClick={() => {
-                                this.onChangeActiveTab(deviceTypes.battery)
-                            }}
-                        >
-                            Battery
-                        </NavLink>
-                    </NavItem>
-                </Nav>
+                <Row className="mb-3">
+                    <Col>
+                        <Nav pills>
 
-                <TabContent activeTab={this.state.activeType}>
+                            {
 
-                    {
-                        [deviceTypes.consumer, deviceTypes.producer].map((type) => {
-                            return (
+                                this.props.filters.map((filter, idx) => {
 
 
-                                <TabPane tabId={type} key={type}>
+                                    return (
+                                        <NavItem key={idx}>
+                                            <NavLink href="#"
+                                                     active={this.state.filterIndexes.indexOf(idx) >= 0}
+                                                     onClick={() => this.onFilterClick(idx)}
+                                            >
+                                                {filter.name}
+                                            </NavLink>
+                                        </NavItem>
+                                    )
 
-                                    <Row>
-                                        <Col>
-                                            <AddDevice type={type}/>
-                                        </Col>
-                                    </Row>
 
-                                    <DeviceList devices={_.filter(this.props.devices, {type})}/>
+                                    return (<Button key={idx}
+                                                    outline
+                                                    color="primary"
+                                                    active={this.state.filterIndexes.indexOf(idx) >= 0}
+                                                    onClick={() => this.onFilterClick(idx)}
+                                    >
+                                        {filter.name}
+                                    </Button>)
+                                })
+                            }
 
-                                </TabPane>
 
-                            )
-                        })
-                    }
+                        </Nav>
+                    </Col>
+                </Row>
 
-                    <TabPane tabId={deviceTypes.battery}>
-                        TODO
-                    </TabPane>
-                </TabContent>
+
+                <DeviceList devices={
+                    this.props.devices.filter((device) => {
+                        let keep = true;
+                        this.state.filterIndexes.every((idx) => {
+                            const filter = this.props.filters[idx];
+                            keep = device[filter.field] === filter.value;
+                            return keep
+                        });
+                        return keep
+                    })
+                }/>
             </div>
         )
 
     }
 }
+
+ConnectedDeviceCommand.defaultProps = {
+    filters: [
+        {
+            field: 'type',
+            value: deviceTypes.consumer,
+            name: 'Consommateur'
+        },
+        {
+            field: 'type',
+            value: deviceTypes.producer,
+            name: 'Production'
+        },
+        {
+            field: 'type',
+            value: deviceTypes.battery,
+            name: 'Battery'
+        },
+        {
+            field: 'simulation',
+            value: true,
+            name: 'Simulation'
+        },
+    ]
+}
+;
 
 
 const DeviceCommand = connect(mapStateToProps)(ConnectedDeviceCommand);

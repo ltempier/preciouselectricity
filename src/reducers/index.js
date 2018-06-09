@@ -1,4 +1,4 @@
-import {ADD_DEVICE, UPD_DEVICE, RMV_DEVICE} from "../constants/actionTypes";
+import {ADD_DEVICE, UPD_DEVICE, RMV_DEVICE, UPD_BATTERY} from "../constants/actionTypes";
 import uuid from 'uuid'
 
 const rootReducer = (state, action) => {
@@ -38,6 +38,15 @@ const rootReducer = (state, action) => {
                         ...action.payload
                     };
                 })
+            };
+
+        case UPD_BATTERY:
+            return {
+                ...state,
+                battery: {
+                    ...state.battery,
+                    ...action.payload
+                }
             };
 
         default:

@@ -5,12 +5,9 @@ import {
     CardBody,
     CardImg,
     CardText,
-    CardSubtitle,
-    CardTitle,
     Modal,
     ModalBody,
     ModalFooter,
-    ModalHeader,
     Row,
     Col,
     Button
@@ -57,13 +54,9 @@ class AddDevice extends Component {
                     </Col>
                 </Row>
 
-
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal} className="modal-lg">
-                    {/*<ModalHeader toggle={this.toggle}>Modal title</ModalHeader>*/}
                     <ModalBody>
-
                         <CardColumns>
-
                             {
                                 deviceConfigs.map((device, idx) => {
                                     return (
@@ -82,8 +75,8 @@ class AddDevice extends Component {
                                 })
                             }
                         </CardColumns>
-
                     </ModalBody>
+
                     <ModalFooter>
                         <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
                     </ModalFooter>

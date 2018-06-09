@@ -1,21 +1,14 @@
 import React, {Component} from 'react';
-import {Navbar, NavbarBrand, Container, Row, Col, TabPane, TabContent} from 'reactstrap';
-import _ from 'lodash';
+import {Navbar, NavbarBrand, Container, Row, Col} from 'reactstrap';
 
-// import DeviceList from "./DeviceList";
 import MainChart from "./MainChart";
-// import AddDevice from "./AddDevice";
 import DeviceCommand from "./DeviceCommand";
-
-// import store from "../store/index";
-// import {addDevice, updDevice} from "../actions/index";
-// import {deviceTypes} from "../constants/deviceConfigs";
 
 class App extends Component {
 
-    // constructor(props) {
-    //     super(props);
-    // }
+    constructor(props) {
+        super(props);
+    }
 
     render() {
         return (

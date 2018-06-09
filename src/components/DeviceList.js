@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 
 import DeviceRow from "./DeviceRow";
-import {ListGroup, ListGroupItem, Row, Col} from 'reactstrap';
-
+import {Row, Col, Card, CardBody} from 'reactstrap';
 
 class ConnectedList extends Component {
 
@@ -11,11 +10,15 @@ class ConnectedList extends Component {
         return (
             <div>
                 {
-                    this.props.devices.map((device, idx) => {
+                    this.props.devices.map((device) => {
                         return (
-                            <Row key={device.id} className={idx > 0 ? 'border-top' : ''}>
+                            <Row key={device.id} className="mb-3">
                                 <Col>
-                                    <DeviceRow {...device}/>
+                                    <Card>
+                                        <CardBody>
+                                            <DeviceRow {...device}/>
+                                        </CardBody>
+                                    </Card>
                                 </Col>
                             </Row>
                         )

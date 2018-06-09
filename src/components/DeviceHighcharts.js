@@ -4,7 +4,8 @@ import _ from 'lodash';
 import ReactHighcharts from 'react-highcharts';
 import DraggablePoints from 'highcharts-draggable-points'
 
-import {formatHour} from '../tools/format'
+import {formatHourInterval} from '../tools/format'
+import {grayLight, green, black} from '../constants/colors'
 
 import {connect} from "react-redux";
 import PropTypes from 'prop-types'
@@ -29,8 +30,8 @@ class ConnectedDeviceCharts extends Component {
         this.lastEvent = {};
         this.chartConfig = {
             chart: {
-                type: 'area',
-                className: 'pointer-chart',
+                type: 'areaspline',
+                className: 'pointer',
                 events: {
                     click: this.onChartClick.bind(this)
                 },
@@ -44,23 +45,23 @@ class ConnectedDeviceCharts extends Component {
             },
             xAxis: {
                 // visible: false,
-                categories: _.range(0, 24).map(formatHour),
+                categories: _.range(0, 24).map(formatHourInterval),
                 min: 0,
                 max: 23,
-                tickInterval: 2,
+                tickInterval: 1,
                 plotBands: [
                     {
-                        color: '#FAFAFA',
-                        from: 0, // Start of the plot band
+                        color: grayLight,
+                        from: -1, // Start of the plot band
                         to: 7 // End of the plot band
                     },
                     {
-                        color: '#FAFAFA',
+                        color: grayLight,
                         from: 12, // Start of the plot band
                         to: 16 // End of the plot band
                     },
                     {
-                        color: '#FAFAFA',
+                        color: grayLight,
                         from: 22, // Start of the plot band
                         to: 24 // End of the plot band
                     },
@@ -73,11 +74,9 @@ class ConnectedDeviceCharts extends Component {
                     text: ''
                 },
                 labels: {
-                    format: '{value}%'
+                    format: '{value} %'
                 },
-                tickInterval: 50,
-                minorTicks: true,
-                minorGridLineDashStyle: 'Dash'
+                tickInterval: 100
             },
             series: [
                 {
@@ -92,6 +91,7 @@ class ConnectedDeviceCharts extends Component {
                     dragMinY: 0,
                     dragMaxY: 100,
                     dragPrecisionY: 1,
+                    color: black
                 }
             ],
             tooltip: {

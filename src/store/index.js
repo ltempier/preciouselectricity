@@ -4,5 +4,5 @@ import persistState from 'redux-localstorage'
 
 const enhancer = compose(persistState());
 
-const store = createStore(rootReducer, {devices: []}, enhancer);
+const store = createStore(rootReducer, {devices: [], battery: {}}, enhancer);
 export default store;
