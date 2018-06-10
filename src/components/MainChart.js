@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import ReactHighcharts from 'react-highcharts';
 import _ from "lodash";
-
-import {formatHourInterval, stringFormatLargeNumber} from '../tools/format'
-import {getBatteryData} from '../tools/battery'
-
-import {deviceTypes} from '../constants/deviceConfigs'
 import {Card, CardBody} from 'reactstrap';
+
+
+import {black, grayLight, green} from '../constants/colors'
+import {formatHourInterval, stringFormatLargeNumber} from '../tools/format'
+import {dataProcess} from '../tools/dataProcess'
+
 import store from "../store/index";
 
 class MainChart extends Component {
@@ -29,7 +30,10 @@ class MainChart extends Component {
                 categories: _.range(0, 24).map(formatHourInterval),
                 min: 0,
                 max: 23,
-                tickInterval: 1
+                tickInterval: 1,
+                crosshair: {
+                    color: grayLight
+                }
             },
             yAxis: {
                 title: {
@@ -41,34 +45,36 @@ class MainChart extends Component {
             series: [
                 {
                     name: 'day',
-                    showInLegend: false,
+                    // showInLegend: false,
+                    color: green,
                     data: []
                 },
                 {
-                    name: 'consumer',
+                    name: 'simulation',
                     type: 'spline',
+                    color: black,
                     data: []
                 },
-                {
-                    name: 'producer',
-                    type: 'spline',
-                    data: []
-                },
-                {
-                    name: 'battery capacity',
-                    type: 'spline',
-                    data: []
-                },
-                {
-                    name: 'battery',
-                    type: 'spline',
-                    data: []
-                },
-                {
-                    name: 'sum with battery',
-                    type: 'spline',
-                    data: []
-                },
+                // {
+                //     name: 'producer',
+                //     type: 'spline',
+                //     data: []
+                // },
+                // {
+                //     name: 'battery capacity',
+                //     type: 'spline',
+                //     data: []
+                // },
+                // {
+                //     name: 'battery',
+                //     type: 'spline',
+                //     data: []
+                // },
+                // {
+                //     name: 'sum with battery',
+                //     type: 'spline',
+                //     data: []
+                // },
             ],
             plotOptions: {
                 series: {
@@ -78,8 +84,15 @@ class MainChart extends Component {
                 }
             },
             tooltip: {
+                shared: true,
+                crosshairs: true,
                 formatter: function () {
-                    return `<b>${this.x} ${stringFormatLargeNumber(this.y)}W</b>`
+                    return [
+                        `<b>Consumption ${this.x}</b>`,
+                        ...this.points.map(function (point) {
+                            return `<span style="color:${point.color}">\u25CF</span><b> ${point.series.name}</b>: ${stringFormatLargeNumber(point.y)}Watt`
+                        })
+                    ].join('<br>')
                 }
             }
         };
@@ -92,41 +105,17 @@ class MainChart extends Component {
     fillChart() {
         let chart = this.refs.chart.getChart();
         let devices = store.getState().devices;
-        let battery = store.getState().battery;
 
-        let sumData = [];
-        let consumerData = [];
-        let producerData = [];
+        let res = dataProcess(devices);
 
-        for (let h = 0; h < 24; h++) {
+        chart.series[0].setData(res.sumDataWithoutSimulation);
+        chart.series[1].setData(res.sumData);
+        // chart.series[2].setData(res.producerData);
+        // chart.series[4].setData(res.batteryData);
 
-            let consumerValue = 0;
-            let producerValue = 0;
-
-            devices.forEach(function (device) {
-                if (device.data.length === 0)
-                    return;
-
-                let value = device.quantity * device.power * (device.data[h] / 100);
-                if (device.type === deviceTypes.consumer)
-                    consumerValue += value;
-                else if (device.type === deviceTypes.producer)
-                    producerValue -= value;
-            });
-
-            consumerData[h] = consumerValue;
-            producerData[h] = producerValue;
-            sumData[h] = consumerValue + producerValue;
-        }
-
-        let res = getBatteryData(battery, sumData);
-
-        chart.series[0].setData(sumData);
-        chart.series[1].setData(consumerData);
-        chart.series[2].setData(producerData);
-        chart.series[3].setData(res.batteryCapacityData);
-        chart.series[4].setData(res.batteryData);
-        chart.series[5].setData(res.sumDataWithBattery);
+        // let battery = store.getState().battery;
+        // let res = getBatteryData(battery, sumData);
+        // chart.series[5].setData(res.sumDataWithBattery);
     }
 
 

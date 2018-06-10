@@ -1,3 +1,5 @@
+/*
+
 import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from 'prop-types'
@@ -68,3 +70,6 @@ ConnectedBatteryForm.propTypes = {
 const BatteryForm = connect(mapStateToProps, mapDispatchToProps)(ConnectedBatteryForm);
 
 export default BatteryForm;
+
+
+*/

@@ -264,11 +264,9 @@ class ConnectedDeviceCharts extends Component {
                     return point.x > h
                 });
 
-
                 if (!lastPoint || !nextPoint) {
-                    console.log('TODO')
+                    console.log('oh oh')
                 } else {
-
 
                     let dx = nextPoint.x - lastPoint.x;
                     let dy = nextPoint.y - lastPoint.y;

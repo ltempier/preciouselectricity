@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import classNames from 'classnames';
-import {Sparklines, SparklinesBars} from 'react-sparklines';
+import {Sparklines, SparklinesBars, SparklinesLine, SparklinesReferenceLine} from 'react-sparklines';
 
 import {
     Collapse,
@@ -48,6 +48,9 @@ class ConnectedDeviceRow extends Component {
         this.onInputNumberChange = this.onInputNumberChange.bind(this);
         this.onButtonClick = this.onButtonClick.bind(this);
         this.onQuantityClick = this.onQuantityClick.bind(this);
+
+
+        console.log(this.props)
     }
 
     onQuantityClick(delta) {
@@ -91,8 +94,10 @@ class ConnectedDeviceRow extends Component {
                     </Col>
 
                     <Col md="4" xs="12" className="">
-                        <Sparklines data={this.props.data} min={0} className="">
-                            <SparklinesBars style={{fill: color}}/>
+                        <Sparklines data={this.props.data} className="">
+                            {/*<SparklinesBars style={{fill: color}}/>*/}
+                            <SparklinesLine style={{strokeWidth: 2, stroke: color, fill: "none"}}/>
+
                         </Sparklines>
                     </Col>
 

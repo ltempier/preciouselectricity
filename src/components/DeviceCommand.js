@@ -56,26 +56,29 @@ class ConnectedDeviceCommand extends Component {
                                 this.props.filters.map((filter, idx) => {
 
 
+                                    // return (
+                                    //     <NavItem key={idx}>
+                                    //         <NavLink href="#"
+                                    //                  active={this.state.filterIndexes.indexOf(idx) >= 0}
+                                    //                  onClick={() => this.onFilterClick(idx)}
+                                    //         >
+                                    //             {filter.name}
+                                    //         </NavLink>
+                                    //     </NavItem>
+                                    // )
+
+
                                     return (
-                                        <NavItem key={idx}>
-                                            <NavLink href="#"
-                                                     active={this.state.filterIndexes.indexOf(idx) >= 0}
-                                                     onClick={() => this.onFilterClick(idx)}
-                                            >
-                                                {filter.name}
-                                            </NavLink>
-                                        </NavItem>
+                                        <Button key={idx}
+                                                outline
+                                                color="primary"
+                                                active={this.state.filterIndexes.indexOf(idx) >= 0}
+                                                onClick={() => this.onFilterClick(idx)}
+                                                className="mr-2"
+                                        >
+                                            {filter.name}
+                                        </Button>
                                     )
-
-
-                                    return (<Button key={idx}
-                                                    outline
-                                                    color="primary"
-                                                    active={this.state.filterIndexes.indexOf(idx) >= 0}
-                                                    onClick={() => this.onFilterClick(idx)}
-                                    >
-                                        {filter.name}
-                                    </Button>)
                                 })
                             }
 
@@ -104,15 +107,17 @@ class ConnectedDeviceCommand extends Component {
 
 ConnectedDeviceCommand.defaultProps = {
     filters: [
+
+
         {
             field: 'type',
             value: deviceTypes.consumer,
-            name: 'Consommateur'
+            name: 'Consumer'
         },
         {
             field: 'type',
             value: deviceTypes.producer,
-            name: 'Production'
+            name: 'Producer'
         },
         {
             field: 'type',

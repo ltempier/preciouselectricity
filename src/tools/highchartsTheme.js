@@ -34,16 +34,20 @@ export default function highchartsTheme() {
         },
 
         plotOptions: {
-            areaspline: {
-                fillOpacity: 1,
-                lineWidth: 0,
+            series: {
                 marker: {
+                    symbol: 'circle',
                     fillColor: white,
                     lineWidth: 2,
                     lineColor: black
                 }
             },
 
+
+            areaspline: {
+                fillOpacity: 1,
+                lineWidth: 0
+            }
         }
 
     };
