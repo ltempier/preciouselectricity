@@ -65,7 +65,7 @@ class ConnectedDeviceCharts extends Component {
                         from: 22, // Start of the plot band
                         to: 24 // End of the plot band
                     },
-                ],
+                ]
             },
             yAxis: {
                 max: 100,
@@ -97,7 +97,7 @@ class ConnectedDeviceCharts extends Component {
             tooltip: {
                 formatter: function () {
                     return [
-                        `<b>${this.x} ${this.y}%</b>`,
+                        `H${this.x} use <b>${this.y}%</b>`,
                         '<small>double click to remove</small>'
                     ].join('<br>')
                 }
@@ -265,7 +265,7 @@ class ConnectedDeviceCharts extends Component {
                 });
 
                 if (!lastPoint || !nextPoint) {
-                    console.log('oh oh')
+                    console.log('oh oh ')
                 } else {
 
                     let dx = nextPoint.x - lastPoint.x;

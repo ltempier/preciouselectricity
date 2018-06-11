@@ -14,7 +14,6 @@ class MainChart extends Component {
     constructor(props) {
         super(props);
 
-
         this.chartConfig = {
             chart: {
                 type: 'areaspline',
@@ -44,37 +43,16 @@ class MainChart extends Component {
             },
             series: [
                 {
-                    name: 'day',
-                    // showInLegend: false,
+                    name: 'current',
                     color: green,
                     data: []
                 },
                 {
-                    name: 'simulation',
+                    name: 'with simulation',
                     type: 'spline',
                     color: black,
                     data: []
-                },
-                // {
-                //     name: 'producer',
-                //     type: 'spline',
-                //     data: []
-                // },
-                // {
-                //     name: 'battery capacity',
-                //     type: 'spline',
-                //     data: []
-                // },
-                // {
-                //     name: 'battery',
-                //     type: 'spline',
-                //     data: []
-                // },
-                // {
-                //     name: 'sum with battery',
-                //     type: 'spline',
-                //     data: []
-                // },
+                }
             ],
             plotOptions: {
                 series: {
@@ -88,7 +66,7 @@ class MainChart extends Component {
                 crosshairs: true,
                 formatter: function () {
                     return [
-                        `<b>Consumption ${this.x}</b>`,
+                        `<b>Consumption H${this.x}</b>`,
                         ...this.points.map(function (point) {
                             return `<span style="color:${point.color}">\u25CF</span><b> ${point.series.name}</b>: ${stringFormatLargeNumber(point.y)}Watt`
                         })
@@ -97,10 +75,15 @@ class MainChart extends Component {
             }
         };
 
-        store.subscribe(this.fillChart.bind(this));
-
     }
 
+    componentDidMount() {
+        this.unsubscribe = store.subscribe(this.fillChart.bind(this));
+    }
+
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
 
     fillChart() {
         let chart = this.refs.chart.getChart();
@@ -110,12 +93,6 @@ class MainChart extends Component {
 
         chart.series[0].setData(res.sumDataWithoutSimulation);
         chart.series[1].setData(res.sumData);
-        // chart.series[2].setData(res.producerData);
-        // chart.series[4].setData(res.batteryData);
-
-        // let battery = store.getState().battery;
-        // let res = getBatteryData(battery, sumData);
-        // chart.series[5].setData(res.sumDataWithBattery);
     }
 
 

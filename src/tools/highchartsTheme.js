@@ -44,6 +44,11 @@ export default function highchartsTheme() {
             },
 
 
+            spline: {
+                lineWidth: 3
+            },
+
+
             areaspline: {
                 fillOpacity: 1,
                 lineWidth: 0

@@ -46,16 +46,13 @@ class AddDevice extends Component {
         return (
             <div>
 
-                <Row>
-                    <Col>
-                        <Button outline color="primary" onClick={this.toggleModal}>
-                            + add device
-                        </Button>
-                    </Col>
-                </Row>
+                <Button outline color="primary" onClick={this.toggleModal} className="float-right">
+                    + add device
+                </Button>
 
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal} className="modal-lg">
                     <ModalBody>
+
                         <CardColumns>
                             {
                                 deviceConfigs.map((device, idx) => {
@@ -75,10 +72,11 @@ class AddDevice extends Component {
                                 })
                             }
                         </CardColumns>
+
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
+                        <Button color="secondary" onClick={this.toggleModal}>Close</Button>
                     </ModalFooter>
                 </Modal>
 

@@ -14,7 +14,15 @@ $theme-colors: (
 $btn-border-radius: 3rem;
 $input-btn-focus-color: $white;
 
-@import "node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+$shadow: 0 2px 4px 0 rgba($precious-gray, 0.3);
+// $shadow: rgb(170, 170, 170) 2px 4px 16px 0px;
+
+.navbar {
+  box-shadow: $shadow;
+  padding: 1rem 2rem;
+}
 
 label {
   @extend small;
@@ -23,7 +31,7 @@ label {
 
 .card {
   @extend .card;
-  box-shadow: 0 2px 4px 0 rgba($precious-gray, 0.3);
+  box-shadow: $shadow;
 }
 
 .btn-outline {
@@ -49,6 +57,16 @@ label {
 .btn-outline-danger {
   @extend .btn-outline;
   @include button-outline-variant($precious-red, $white);
+}
+
+.btn-quantity .btn {
+  padding: 0.375rem 0.65rem;
+}
+
+.btn-quantity .btn:nth-child(2) {
+  opacity: 1;
+  border-left: 0;
+  border-right: 0;
 }
 
 $badge-type-size: 3em !default;
@@ -80,4 +98,52 @@ $badge-type-size: 3em !default;
 
 .sparklines-container {
   bottom: -9px;
+}
+
+@import "../node_modules/react-toggle/style.css";
+
+$toggle-color: $precious-gray;
+$toggle-checked-color: $black;
+
+.react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: $toggle-color;
+}
+
+.react-toggle--checked .react-toggle-track {
+  background-color: $toggle-checked-color
+
+}
+
+.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+  background-color: $toggle-checked-color
+}
+
+.react-toggle--focus .react-toggle-thumb {
+  box-shadow: 0px 0px 0px 0px;
+}
+
+.react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb {
+  box-shadow: 0px 0px 0px 0px;
+}
+
+$toggle-height: 40px;
+$toggle-width: 70px;
+$toggle-border-width: 2px;
+
+.react-toggle-track {
+  background-color: $toggle-color;
+  width: $toggle-width;
+  height: $toggle-height;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+  left: $toggle-width - $toggle-height + $toggle-border-width;
+}
+
+.react-toggle-thumb {
+  top: $toggle-border-width;
+  left: $toggle-border-width;
+  border: 0px;
+  width: $toggle-height - 2*($toggle-border-width);
+  height: $toggle-height - 2*($toggle-border-width);
 }

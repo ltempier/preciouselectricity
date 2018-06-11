@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import PropTypes from 'prop-types'
 import _ from 'lodash'
-import classNames from 'classnames';
+
 import {Sparklines, SparklinesBars, SparklinesLine, SparklinesReferenceLine} from 'react-sparklines';
+import Toggle from 'react-toggle'
 
 import {
     Collapse,
@@ -66,6 +67,7 @@ class ConnectedDeviceRow extends Component {
     }
 
     onButtonClick(e) {
+        console.log('io', e.target.name, e.target.value)
         this.props.updDevice(this.props.id, {[e.target.name]: !this.props[e.target.name]})
     }
 
@@ -88,12 +90,12 @@ class ConnectedDeviceRow extends Component {
                         </div>
                     </Col>
 
-                    <Col md="5" xs="10" className="">
+                    <Col md="4" xs="10" className="">
                         <h2 className="font-weight-bold text-capitalize">{this.props.name}</h2>
                         <span className="text-muted">{this.props.power * this.props.quantity} Watt</span>
                     </Col>
 
-                    <Col md="4" xs="12" className="">
+                    <Col lg="4" md="3" xs="12" className="">
                         <Sparklines data={this.props.data} className="">
                             {/*<SparklinesBars style={{fill: color}}/>*/}
                             <SparklinesLine style={{strokeWidth: 2, stroke: color, fill: "none"}}/>
@@ -101,12 +103,25 @@ class ConnectedDeviceRow extends Component {
                         </Sparklines>
                     </Col>
 
-                    <Col md="1" xs="12" className="d-flex justify-content-center">
+
+
+                    <Col md="auto" xs="6">
+                        <ButtonGroup className="btn-quantity">
+                            <Button outline color="primary" onClick={() => this.onQuantityClick(-1)}
+                                    disabled={this.props.quantity <= 0}>-</Button>
+                            <Button outline color="primary" disabled>{this.props.quantity}</Button>
+                            <Button outline color="primary" onClick={() => this.onQuantityClick(1)}>+</Button>
+                        </ButtonGroup>
+                    </Col>
+
+
+                    <Col md="1" xs="6" className="d-flex justify-content-center">
                         <Button outline color="primary"
                                 onClick={() => this.setState({collapse: !this.state.collapse})}>
                             {this.state.collapse ? "Hide" : "Edit"}
                         </Button>
                     </Col>
+
                 </Row>
 
                 <Collapse isOpen={this.state.collapse}>
@@ -150,11 +165,11 @@ class ConnectedDeviceRow extends Component {
                         <Col md="auto" xs="6">
                             <Label>Quantity</Label>
                             <Form inline>
-                                <ButtonGroup>
-                                    <Button outline color="primary" onClick={() => this.onQuantityClick(-1)}
+                                <ButtonGroup className="btn-quantity">
+                                    <Button outline onClick={() => this.onQuantityClick(-1)}
                                             disabled={this.props.quantity <= 0}>-</Button>
-                                    <Button outline color="primary" disabled>{this.props.quantity}</Button>
-                                    <Button outline color="primary" onClick={() => this.onQuantityClick(1)}>+</Button>
+                                    <Button outline disabled>{this.props.quantity}</Button>
+                                    <Button outline onClick={() => this.onQuantityClick(1)}>+</Button>
                                 </ButtonGroup>
                             </Form>
                         </Col>
@@ -162,18 +177,14 @@ class ConnectedDeviceRow extends Component {
                         <Col md="auto" xs="6">
                             <Label>Simulation</Label>
                             <Form inline>
-                                <Button outline
-                                        color={this.props.simulation ? "secondary" : "primary"}
-                                        name="simulation"
-                                        active={true}
-                                        onClick={this.onButtonClick}
-                                >
-                                    {this.props.simulation === true ? 'Yes' : 'No'}
-                                </Button>
+                                <Toggle
+                                    name="simulation"
+                                    defaultChecked={this.props.simulation}
+                                    icons={false}
+                                    onChange={this.onButtonClick}/>
                             </Form>
 
                         </Col>
-
                     </Row>
 
                     <Row className="mb-2 mt-5">

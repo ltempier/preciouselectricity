@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {Navbar, NavbarBrand, Container, Row, Col} from 'reactstrap';
+import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
-import MainChart from "./MainChart";
-import DeviceCommand from "./DeviceCommand";
+import Navbar from "./Navbar";
+import Simulation from "./Simulation";
 
 class App extends Component {
 
@@ -12,26 +12,15 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App">
+            <Router >
+                <div className="App">
 
-                <Navbar>
-                    <NavbarBrand href="/">precious electricity</NavbarBrand>
-                </Navbar>
+                    <Route path="/" component={Navbar}/>
+                    <Route path="/simulation" component={Simulation}/>
+                </div>
 
-                <Container>
-                    <Row className="mt-3">
-                        <Col>
-                            <MainChart/>
-                        </Col>
-                    </Row>
+            </Router>
 
-                    <Row className="mt-3 mb-5">
-                        <Col>
-                            <DeviceCommand/>
-                        </Col>
-                    </Row>
-                </Container>
-            </div>
         );
     }
 }

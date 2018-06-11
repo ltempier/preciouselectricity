@@ -1,26 +1,24 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import _ from "lodash";
-import {Button, ButtonGroup, Row, Col, Card, CardBody, Nav, NavItem, NavLink} from 'reactstrap';
+import {Container, Row, Col, Button} from 'reactstrap';
 
-import {deviceTypes} from '../constants/deviceConfigs';
-import DeviceList from './DeviceList';
+import MainChart from "./MainChart";
+import DeviceList from "./DeviceList";
 import AddDevice from "./AddDevice";
-import BatteryForm from "./BatteryForm";
+
+import {deviceTypes} from "../constants/deviceConfigs"
 
 const mapStateToProps = state => {
     return {devices: state.devices};
 };
 
-class ConnectedDeviceCommand extends Component {
-
+class ConnectedSimulation extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            filterIndexes: [],
+            filterIndexes: []
         };
-
         this.onFilterClick = this.onFilterClick.bind(this)
     }
 
@@ -43,31 +41,26 @@ class ConnectedDeviceCommand extends Component {
     }
 
     render() {
-
         return (
 
             <div>
-                <Row className="mb-3">
-                    <Col>
-                        <Nav pills>
+                <Container>
+                    <Row className="mt-3">
+                        <Col>
+                            <MainChart/>
+                        </Col>
+                    </Row>
+
+                    <Row className="mb-4 mt-3">
+
+                        <Col sm={{size: 3, order: 1, offset: 0}}>
+                            <h2>Electrical Devices</h2>
+                        </Col>
+
+                        <Col sm={{size: 6, order: 2, offset: 0}}>
 
                             {
-
                                 this.props.filters.map((filter, idx) => {
-
-
-                                    // return (
-                                    //     <NavItem key={idx}>
-                                    //         <NavLink href="#"
-                                    //                  active={this.state.filterIndexes.indexOf(idx) >= 0}
-                                    //                  onClick={() => this.onFilterClick(idx)}
-                                    //         >
-                                    //             {filter.name}
-                                    //         </NavLink>
-                                    //     </NavItem>
-                                    // )
-
-
                                     return (
                                         <Button key={idx}
                                                 outline
@@ -81,34 +74,41 @@ class ConnectedDeviceCommand extends Component {
                                     )
                                 })
                             }
+                        </Col>
 
+                        <Col sm={{size: 3, order: 3, offset: 0}}>
+                            <AddDevice/>
+                        </Col>
 
-                        </Nav>
-                    </Col>
-                </Row>
+                    </Row>
 
+                    <Row>
+                        <Col>
+                            <DeviceList devices={
+                                this.props.devices.filter((device) => {
+                                    let keep = true;
+                                    this.state.filterIndexes.every((idx) => {
+                                        const filter = this.props.filters[idx];
+                                        keep = device[filter.field] === filter.value;
+                                        return keep
+                                    });
+                                    return keep
+                                })
+                            }/>
+                        </Col>
+                    </Row>
 
-                <DeviceList devices={
-                    this.props.devices.filter((device) => {
-                        let keep = true;
-                        this.state.filterIndexes.every((idx) => {
-                            const filter = this.props.filters[idx];
-                            keep = device[filter.field] === filter.value;
-                            return keep
-                        });
-                        return keep
-                    })
-                }/>
+                </Container>
             </div>
+
         )
 
     }
 }
 
-ConnectedDeviceCommand.defaultProps = {
+
+ConnectedSimulation.defaultProps = {
     filters: [
-
-
         {
             field: 'type',
             value: deviceTypes.consumer,
@@ -127,12 +127,11 @@ ConnectedDeviceCommand.defaultProps = {
         {
             field: 'simulation',
             value: true,
-            name: 'Simulation'
+            name: 'Only simulation'
         },
     ]
-}
-;
+};
 
 
-const DeviceCommand = connect(mapStateToProps)(ConnectedDeviceCommand);
-export default DeviceCommand;
+const Simulation = connect(mapStateToProps)(ConnectedSimulation);
+export default Simulation
