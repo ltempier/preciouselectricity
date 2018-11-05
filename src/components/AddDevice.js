@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {connect} from "react-redux";
+
 import {
     CardColumns,
     Card,
@@ -8,15 +10,18 @@ import {
     Modal,
     ModalBody,
     ModalFooter,
-    Row,
-    Col,
     Button
 } from 'reactstrap';
 
-import store from "../store/index";
 import {addDevice} from "../actions/index";
 import {deviceConfigs} from "../constants/deviceConfigs";
 
+
+const mapDispatchToProps = dispatch => {
+    return {
+        addDevice: (device) => dispatch(addDevice(device))
+    };
+};
 
 class AddDevice extends Component {
 
@@ -37,7 +42,7 @@ class AddDevice extends Component {
     }
 
     onAddDeviceClick(device) {
-        store.dispatch(addDevice(device));
+        this.props.addDevice(device)
         this.setState({modal: false});
     }
 
@@ -85,4 +90,4 @@ class AddDevice extends Component {
     }
 }
 
-export default AddDevice;
+export default connect(null, mapDispatchToProps)(AddDevice);

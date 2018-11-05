@@ -1,6 +1,6 @@
 import uuid from 'uuid'
 
-import {ADD_DEVICE, UPD_DEVICE, RMV_DEVICE} from "../constants/actionTypes";
+import {ADD_DEVICE, UPD_DEVICE, RMV_DEVICE, REFRESH_MAINCHART} from "../constants/actionTypes";
 
 import {batteryProcess} from '../tools/dataProcess';
 
@@ -9,6 +9,7 @@ const rootReducer = (state, action) => {
         case ADD_DEVICE:
             return {
                 ...state,
+                refreshMainChart: true,
                 devices: batteryProcess(
                     [
                         {
@@ -29,6 +30,7 @@ const rootReducer = (state, action) => {
         case RMV_DEVICE:
             return {
                 ...state,
+                refreshMainChart: true,
                 devices: batteryProcess(
                     state.devices.filter((device) => {
                         return device.id !== action.id;
@@ -39,6 +41,7 @@ const rootReducer = (state, action) => {
         case UPD_DEVICE:
             return {
                 ...state,
+                // refreshMainChart: true,
                 devices: batteryProcess(
                     state.devices.map((device) => {
                         if (device.id !== action.id)
@@ -52,6 +55,11 @@ const rootReducer = (state, action) => {
                 )
             };
 
+        case REFRESH_MAINCHART:
+            return {
+                ...state,
+                refreshMainChart: action.payload
+            };
         default:
             return state;
     }

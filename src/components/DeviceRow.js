@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 
-import {Sparklines, SparklinesBars, SparklinesLine, SparklinesReferenceLine} from 'react-sparklines';
+import {Sparklines, SparklinesLine} from 'react-sparklines';
 import Toggle from 'react-toggle'
 
 import {
@@ -14,12 +14,11 @@ import {
     ButtonGroup,
     Label,
     Input,
-    Form,
-    Container
+    Form
 } from 'reactstrap';
 
 import DeviceCharts from './DeviceHighcharts';
-import {updDevice, rmvDevice} from "../actions/index";
+import {updDevice, rmvDevice, refreshMainChart} from "../actions/index";
 import {deviceTypes, deviceTypesById} from "../constants/deviceConfigs";
 import {green, black, gray} from "../constants/colors";
 
@@ -31,12 +30,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
+        refreshMainChart: () => dispatch(refreshMainChart(true)),
         updDevice: (id, device) => dispatch(updDevice(id, device)),
         rmvDevice: (id) => dispatch(rmvDevice(id))
     };
 };
 
-class ConnectedDeviceRow extends Component {
+class DeviceRow extends Component {
 
     constructor(props) {
         super(props);
@@ -49,26 +49,26 @@ class ConnectedDeviceRow extends Component {
         this.onInputNumberChange = this.onInputNumberChange.bind(this);
         this.onButtonClick = this.onButtonClick.bind(this);
         this.onQuantityClick = this.onQuantityClick.bind(this);
-
-
-        console.log(this.props)
     }
 
     onQuantityClick(delta) {
         this.props.updDevice(this.props.id, {quantity: this.props.quantity + delta})
+        this.props.refreshMainChart()
     }
 
     onInputNumberChange(e) {
         this.props.updDevice(this.props.id, {[e.target.name]: parseInt(e.target.value, 10)})
+        this.props.refreshMainChart()
     }
 
     onInputChange(e) {
         this.props.updDevice(this.props.id, {[e.target.name]: e.target.value})
+        this.props.refreshMainChart()
     }
 
     onButtonClick(e) {
-        console.log('io', e.target.name, e.target.value)
         this.props.updDevice(this.props.id, {[e.target.name]: !this.props[e.target.name]})
+        this.props.refreshMainChart()
     }
 
     render() {
@@ -78,6 +78,11 @@ class ConnectedDeviceRow extends Component {
             color = gray;
         else if (this.props.simulation)
             color = black;
+
+
+        let chart = <DeviceCharts id={this.props.id} data={this.props.chartData}/>;
+        if (this.props.type === deviceTypes.battery)
+            chart = <div></div>;
 
 
         return (
@@ -97,12 +102,9 @@ class ConnectedDeviceRow extends Component {
 
                     <Col lg="4" md="3" xs="12" className="">
                         <Sparklines data={this.props.data} className="">
-                            {/*<SparklinesBars style={{fill: color}}/>*/}
                             <SparklinesLine style={{strokeWidth: 2, stroke: color, fill: "none"}}/>
-
                         </Sparklines>
                     </Col>
-
 
 
                     <Col md="auto" xs="6">
@@ -125,10 +127,8 @@ class ConnectedDeviceRow extends Component {
                 </Row>
 
                 <Collapse isOpen={this.state.collapse}>
-
                     <hr/>
                     <Row className="mb-2 align-items-center justify-content-center">
-
                         <Col md="3" xs="12">
                             <Label>Device name</Label>
                             <Input type="text"
@@ -139,7 +139,7 @@ class ConnectedDeviceRow extends Component {
                         </Col>
 
                         <Col md="2" xs="12">
-                            <Label>Device power</Label>
+                            <Label>{this.props.type === deviceTypes.battery ? 'Battery capacity (Wh)' : 'Device power (Watt)'}</Label>
                             <Input type="number" min={0} step={100}
                                    name="power"
                                    value={this.props.power}
@@ -183,13 +183,12 @@ class ConnectedDeviceRow extends Component {
                                     icons={false}
                                     onChange={this.onButtonClick}/>
                             </Form>
-
                         </Col>
                     </Row>
 
-                    <Row className="mb-2 mt-5">
+                    <Row className="mb-2 mt-3">
                         <Col>
-                            <DeviceCharts id={this.props.id} data={this.props.chartData}/>
+                            {chart}
                         </Col>
                     </Row>
 
@@ -197,7 +196,6 @@ class ConnectedDeviceRow extends Component {
                         <Col md="2" xs="12">
                             <Button outline color="danger" block
                                     onClick={() => this.props.rmvDevice(this.props.id)}>Delete</Button>
-
                         </Col>
                     </Row>
 
@@ -207,7 +205,7 @@ class ConnectedDeviceRow extends Component {
     }
 }
 
-ConnectedDeviceRow.propTypes = {
+DeviceRow.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     power: PropTypes.number.isRequired,
@@ -216,6 +214,4 @@ ConnectedDeviceRow.propTypes = {
     chartData: PropTypes.array
 };
 
-const DeviceRow = connect(mapStateToProps, mapDispatchToProps)(ConnectedDeviceRow);
-
-export default DeviceRow;
+export default connect(mapStateToProps, mapDispatchToProps)(DeviceRow);

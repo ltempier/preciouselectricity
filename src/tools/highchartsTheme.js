@@ -1,4 +1,4 @@
-import {white, green, grayLight, black} from '../constants/colors'
+import {white, black} from '../constants/colors'
 
 import ReactHighcharts from 'react-highcharts';
 
@@ -6,7 +6,7 @@ import ReactHighcharts from 'react-highcharts';
 export default function highchartsTheme() {
 
     ReactHighcharts.Highcharts.theme = {
-        colors: ['black', '#dc3545', '#28a745', '#007bff'],
+        colors: [],
         chart: {},
         title: {},
         subtitle: {},

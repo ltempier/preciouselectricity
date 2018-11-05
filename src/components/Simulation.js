@@ -7,19 +7,31 @@ import DeviceList from "./DeviceList";
 import AddDevice from "./AddDevice";
 
 import {deviceTypes} from "../constants/deviceConfigs"
+import {refreshMainChart} from "../actions"
+
+
+const mapDispatchToProps = dispatch => {
+    return {
+        refreshMainChart: () => dispatch(refreshMainChart(true))
+    };
+};
 
 const mapStateToProps = state => {
     return {devices: state.devices};
 };
 
-class ConnectedSimulation extends Component {
+class Simulation extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             filterIndexes: []
         };
-        this.onFilterClick = this.onFilterClick.bind(this)
+        this.onFilterClick = this.onFilterClick.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.refreshMainChart()
     }
 
     onFilterClick(newFilterIdx) {
@@ -107,7 +119,7 @@ class ConnectedSimulation extends Component {
 }
 
 
-ConnectedSimulation.defaultProps = {
+Simulation.defaultProps = {
     filters: [
         {
             field: 'type',
@@ -133,5 +145,4 @@ ConnectedSimulation.defaultProps = {
 };
 
 
-const Simulation = connect(mapStateToProps)(ConnectedSimulation);
-export default Simulation
+export default connect(mapStateToProps, mapDispatchToProps)(Simulation);

@@ -5,7 +5,7 @@ import ReactHighcharts from 'react-highcharts';
 import DraggablePoints from 'highcharts-draggable-points'
 
 import {formatHourInterval} from '../tools/format'
-import {grayLight, green, black} from '../constants/colors'
+import {grayLight, gray, black, green} from '../constants/colors'
 
 import {connect} from "react-redux";
 import PropTypes from 'prop-types'
@@ -21,7 +21,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-class ConnectedDeviceCharts extends Component {
+class DeviceChart extends Component {
 
     constructor(props) {
 
@@ -35,7 +35,7 @@ class ConnectedDeviceCharts extends Component {
                 events: {
                     click: this.onChartClick.bind(this)
                 },
-                height: 300
+                height: 280
             },
             credits: {
                 enabled: false
@@ -294,12 +294,10 @@ class ConnectedDeviceCharts extends Component {
     }
 }
 
-ConnectedDeviceCharts.propTypes = {
+DeviceChart.propTypes = {
     id: PropTypes.string.isRequired,
     data: PropTypes.array
 };
 
-const DeviceCharts = connect(null, mapDispatchToProps)(ConnectedDeviceCharts);
-
-export default DeviceCharts;
+export default connect(null, mapDispatchToProps)(DeviceChart);
 

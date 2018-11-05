@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 import DeviceRow from "./DeviceRow";
 import {Row, Col, Card, CardBody} from 'reactstrap';
 
-class ConnectedList extends Component {
+
+
+class DeviceList extends Component {
 
     render() {
         return (
@@ -29,8 +31,8 @@ class ConnectedList extends Component {
     }
 }
 
-ConnectedList.propTypes = {
+DeviceList.propTypes = {
     devices: PropTypes.array.isRequired
 };
 
-export default ConnectedList;
+export default DeviceList;

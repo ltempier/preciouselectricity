@@ -46,12 +46,23 @@ export function dataProcess(devices) {
         });
     }
 
+    let priceWithoutSimulation = _.fill(Array(24), 0);
+    let price = _.fill(Array(24), 0);
+    let batteryCapacityData = _.fill(Array(24), 0);
+    let buffer = 0;
+    batteryData.forEach(function (value, idx) {
+        batteryCapacityData[idx] = (buffer += value)
+    });
+
     return {
         sumData,
         sumDataWithoutSimulation,
+        price,
+        priceWithoutSimulation,
         producerData,
         consumerData,
-        batteryData
+        batteryData,
+        batteryCapacityData
     }
 }
 
@@ -64,9 +75,6 @@ export function batteryProcess(devices) {
 
     if (batteries.length === 0)
         return devices;
-
-
-    console.log('lol');
 
     batteries = batteries.map(function (battery) {
 
