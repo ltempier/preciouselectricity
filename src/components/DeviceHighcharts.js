@@ -5,7 +5,7 @@ import ReactHighcharts from 'react-highcharts';
 import DraggablePoints from 'highcharts-draggable-points'
 
 import {formatHourInterval} from '../tools/format'
-import {grayLight, gray, black, green} from '../constants/colors'
+import {grayLight, black} from '../constants/colors'
 
 import {connect} from "react-redux";
 import PropTypes from 'prop-types'
