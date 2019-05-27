@@ -41,7 +41,7 @@ const rootReducer = (state, action) => {
         case UPD_DEVICE:
             return {
                 ...state,
-                // refreshMainChart: true,
+                refreshMainChart: true,
                 devices: batteryProcess(
                     state.devices.map((device) => {
                         if (device.id !== action.id)

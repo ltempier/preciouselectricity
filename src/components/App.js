@@ -11,17 +11,16 @@ class App extends Component {
     }
 
     render() {
-        return (
-            <Router>
-                <div className="App">
+        return <Simulation/>
 
-                    <Route path="/" component={Navbar}/>
-                    <Route path="/simulation" component={Simulation}/>
-                </div>
-
-            </Router>
-
-        );
+        // return (
+        //     <Router>
+        //         <div className="App">
+        //             <Route path="/" component={Navbar}/>
+        //             <Route path="/simulation" component={Simulation}/>
+        //         </div>
+        //     </Router>
+        // );
     }
 }
 

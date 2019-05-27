@@ -6,18 +6,18 @@ import _ from "lodash";
 import {
     Card,
     CardBody,
-    Button,
-    ButtonGroup,
+    // Button,
+    // ButtonGroup,
     ButtonDropdown,
     DropdownToggle,
     DropdownMenu,
     DropdownItem
 } from 'reactstrap';
 
-import FaCog from 'react-icons/lib/fa/cog'
+// import FaCog from 'react-icons/lib/fa/cog'
 
 
-import {black, grayLight, green} from '../constants/colors'
+import {black, grayLight, gray, green, red} from '../constants/colors'
 import {formatHourInterval, stringFormatLargeNumber} from '../tools/format'
 import {dataProcess} from '../tools/dataProcess'
 import {refreshMainChart} from '../actions/index'
@@ -62,19 +62,7 @@ class MainChart extends Component {
                 minorTicks: true,
                 minorGridLineDashStyle: 'Dash'
             },
-            series: [
-                {
-                    name: 'current',
-                    color: green,
-                    data: []
-                },
-                {
-                    name: 'with simulation',
-                    type: 'spline',
-                    color: black,
-                    data: []
-                }
-            ],
+            series: [],
             plotOptions: {
                 series: {
                     marker: {
@@ -87,7 +75,7 @@ class MainChart extends Component {
                 crosshairs: true,
                 formatter: function () {
                     return [
-                        `<b>Consumption H${this.x}</b>`,
+                        `<b>Hour ${this.x}</b>`,
                         ...this.points.map(function (point) {
                             return `<span style="color:${point.color}">\u25CF</span><b> ${point.series.name}</b>: ${stringFormatLargeNumber(point.y)}Watt`
                         })
@@ -96,8 +84,15 @@ class MainChart extends Component {
             }
         };
 
+
+        this.displayOptions = [
+            "Consumption vs simulation",
+            "Consumption by type",
+            "Price chart"
+        ];
+
         this.state = {
-            display: 1,
+            display: 0,
             dropdownOpen: false
         };
 
@@ -118,16 +113,76 @@ class MainChart extends Component {
         if (store.getState().refreshMainChart === false && force !== true)
             return;
 
+        console.log('fillChart', force);
+
         this.props.pauseRefreshMainChart();
-        // console.log('fillChart');
 
         let chart = this.refs.chart.getChart();
         let devices = store.getState().devices;
-
         let res = dataProcess(devices);
 
-        chart.series[0].setData(res.sumDataWithoutSimulation);
-        chart.series[1].setData(res.sumData);
+        chart.setTitle({text: this.displayOptions[this.state.display]});
+
+        while (chart.series.length > 0) {
+            chart.series[0].remove(false);
+        }
+
+        switch (this.state.display) {
+            case 0:
+
+                chart.addSeries({
+                    name: 'current',
+                    color: green,
+                    data: res.sumDataWithoutSimulation
+                });
+
+                chart.addSeries({
+                    name: 'with simulation',
+                    type: 'spline',
+                    color: black,
+                    data: res.sumData
+                });
+
+                break;
+            case 1:
+
+                chart.addSeries({
+                    name: 'Sum',
+                    color: gray,
+                    data: res.sumData
+                });
+
+                chart.addSeries({
+                    name: 'Consumer',
+                    type: 'spline',
+                    color: red,
+                    data: res.consumerData
+                });
+
+                chart.addSeries({
+                    name: 'Producer',
+                    type: 'spline',
+                    color: green,
+                    data: res.producerData.map((v) => -v)
+                });
+
+
+                chart.addSeries({
+                    name: 'Battery',
+                    type: 'spline',
+                    color: black,
+                    data: res.batteryData
+                    // data: res.batteryData.map((v) => -v)
+                });
+
+                break;
+            case 2:
+                break;
+
+            default:
+                break;
+        }
+
     }
 
 
@@ -138,11 +193,20 @@ class MainChart extends Component {
     }
 
     changeDisplay(display) {
+
+        if (isNaN(display))
+            display = this.displayOptions.indexOf(display);
+
+        if (display < 0 || display >= this.displayOptions.length)
+            return;
+
         if (this.state.display === display)
             return;
 
-        this.setState({display});
-        this.fillChart(true)
+        console.log('change display', display);
+
+        this.setState({display}, () => this.fillChart(true));
+
     }
 
     render() {
@@ -158,21 +222,20 @@ class MainChart extends Component {
                             toggle={this.toggleParameter}>
                             <DropdownToggle caret>Parameter</DropdownToggle>
                             <DropdownMenu>
-                                <DropdownItem active={this.state.display === 1}
-                                              onClick={() => this.changeDisplay(1)}>Simulation chart
-                                </DropdownItem>
 
-                                <DropdownItem active={this.state.display === 2}
-                                              onClick={() => this.changeDisplay(2)}>By type chart
-                                </DropdownItem>
-
-                                <DropdownItem active={this.state.display === 3}
-                                              onClick={() => this.changeDisplay(3)}>Price chart
-                                </DropdownItem>
+                                {
+                                    this.displayOptions.map((option, optionIdx) => {
+                                        return (
+                                            <DropdownItem key={optionIdx}
+                                                          active={this.state.display === optionIdx}
+                                                          onClick={() => this.changeDisplay(optionIdx)}>{option}
+                                            </DropdownItem>)
+                                    })
+                                }
 
                                 <DropdownItem divider/>
-
                                 <DropdownItem>Edit price</DropdownItem>
+
                             </DropdownMenu>
                         </ButtonDropdown>
 
